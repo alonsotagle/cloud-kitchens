@@ -1,0 +1,124 @@
+version: "3.3"
+services:
+
+  producer:
+    build:
+      context: ..
+      dockerfile: ./infra/python.Dockerfile
+      args:
+        DIR_SOURCE: src/orders_producer/
+    container_name: orders_producer
+    volumes:
+      - ../src/orders_producer:/app
+    environment:
+      - KAFKA_SERVER=localhost:9092
+      - KAFKA_TOPIC_ORDERS=orders
+      - DELAY_TIME=1
+      - BATCH_SIZE=2
+    network_mode: host
+    depends_on:
+      - consumer
+
+  consumer:
+    build:
+      context: ..
+      dockerfile: ./infra/python.Dockerfile
+      args:
+        DIR_SOURCE: src/orders_consumer/
+    container_name: orders_consumer
+    volumes:
+      - ../src/orders_consumer:/app
+    environment:
+      - KAFKA_SERVER=localhost:9092
+      - KAFKA_TOPIC_ORDERS=orders
+      - HOST_KITCHEN=http://localhost:5002
+    network_mode: host
+    depends_on:
+      - kitchen
+
+  mongodb:
+    image: mongo:4.0.8
+    container_name: mongodb
+    command: mongod --auth
+    volumes:
+      - ../db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=cloudkitchensdb
+    networks:
+      default:
+        aliases:
+          - db.cloudkitchens.com
+
+  kitchen:
+    build:
+      context: ..
+      dockerfile: ./infra/api.Dockerfile
+      args:
+        DIR_SOURCE: src/kitchen_api/
+    container_name: kitchen
+    volumes:
+      - ../src/kitchen_api:/app
+    ports:
+      - 5002:80
+    networks:
+      default:
+        aliases:
+          - kitchen.cloudkitchens.com
+    depends_on:
+      - couriers
+    environment:
+      - FLASK_DEBUG=1 # TODO Remove for prod
+      - FLASK_RUN_PORT=80
+      - FLASK_ENV=development
+      - FLASK_APP=main.py
+      - MONGODB_DATABASE=cloudkitchensdb
+      - MONGODB_USERNAME=kitchen
+      - MONGODB_PASSWORD=5^2A5ubDwhk#&Xn&
+      - MONGODB_HOSTNAME=db.cloudkitchens.com
+      - HOST_COURIERS=http://couriers.cloudkitchens.com
+
+  couriers:
+    build:
+      context: ..
+      dockerfile: ./infra/api.Dockerfile
+      args:
+        DIR_SOURCE: src/couriers_api/
+    container_name: couriers
+    volumes:
+      - ../src/couriers_api:/app
+    networks:
+      default:
+        aliases:
+          - couriers.cloudkitchens.com
+    depends_on:
+      - mongodb
+    environment:
+      - FLASK_DEBUG=1 # TODO Remove for prod
+      - FLASK_RUN_PORT=80
+      - FLASK_ENV=development
+      - FLASK_APP=main.py
+      - MONGODB_DATABASE=cloudkitchensdb
+      - MONGODB_USERNAME=couriers
+      - MONGODB_PASSWORD=u#Z6I8FPGHEq479n
+      - MONGODB_HOSTNAME=db.cloudkitchens.com
+      - HOST_KITCHEN=http://kitchen.cloudkitchens.com
+
+  shelves:
+    build:
+      context: ..
+      dockerfile: ./infra/python.Dockerfile
+      args:
+        DIR_SOURCE: src/shelves_watcher/
+    container_name: shelves_watcher
+    volumes:
+      - ../src/shelves_watcher:/app
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_HOSTNAME=db.cloudkitchens.com
+      - MONGODB_DATABASE=cloudkitchensdb
+      - MONGODB_USERNAME=shelves
+      - MONGODB_PASSWORD=HTBbK7z!N9kftjWK
+      - HOST_KITCHEN=http://kitchen.cloudkitchens.com
