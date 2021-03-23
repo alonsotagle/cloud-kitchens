@@ -14,7 +14,6 @@ producer = KafkaProducer(
 
 
 with open("orders.json") as orders_file:
-# with open("orders.json") as orders_file:
     orders = load(orders_file)
     for idx, order in enumerate(orders):
 
