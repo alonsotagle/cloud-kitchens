@@ -1,9 +1,9 @@
 version: "3.3"
 services:
 
-  test_mongodb:
+  mongodb_test:
     image: mongo:4.0.8
-    container_name: test_mongodb
+    container_name: mongodb_test
     command: mongod --auth
     volumes:
       - ../db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
@@ -33,4 +33,4 @@ services:
       - ../src:/app/src
       - ../tests:/app/tests
     depends_on:
-      - test_mongodb
+      - mongodb_test

@@ -112,6 +112,7 @@ services:
       args:
         DIR_SOURCE: src/shelves_watcher/
     container_name: shelves_watcher
+    restart: unless-stopped
     volumes:
       - ../src/shelves_watcher:/app
     depends_on:

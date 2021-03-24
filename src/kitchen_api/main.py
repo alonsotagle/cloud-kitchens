@@ -13,7 +13,8 @@ app.config["MONGO_URI"] = f"mongodb://{os.environ.get('MONGODB_USERNAME')}:{os.e
 mongo.init_app(app)
 
 
-def initialize_db():
+@app.before_first_request
+def initialize_db() -> None:
     mongo.db.orders.drop()
     mongo.db.shelves.drop()
     mongo.db.couriers.drop()
@@ -42,5 +43,4 @@ def discard(order_id):
 
 
 if __name__ == "__main__":
-    initialize_db()
     app.run(host="0.0.0.0")

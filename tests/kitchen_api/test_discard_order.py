@@ -3,7 +3,6 @@ import json
 from .order_factory import create_fake_order
 
 from src.kitchen_api.database import mongo
-
 from src.kitchen_api.orders import insert_order
 from src.kitchen_api.shelves import assign_shelf
 
@@ -23,6 +22,3 @@ def test_discard_order(client, faker):
     assert response.status_code == 200
     assert isinstance(data, dict)
     assert data.get("message").find(str(fake_order_id)) != -1
-    
-    order = mongo.db.orders.find_one({"_id": fake_order_id})
-    assert order.get("status") == "waste"
