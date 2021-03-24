@@ -4,7 +4,7 @@
 ##########################
 
 build:
-	@cd infra && docker-compose -f docker-compose.build.yml up -d
+	@docker-compose -f infra/docker-compose.build.yml up -d
 
 
 ##########################
@@ -13,7 +13,7 @@ build:
 
 start:
 	@docker-compose -f infra/docker-compose.start.yml down
-	@cd infra && docker-compose -f docker-compose.start.yml up -d
+	@docker-compose -f infra/docker-compose.start.yml up -d
 
 
 ##########################
@@ -28,6 +28,5 @@ stop:
 #         Testing        #
 ##########################
 
-tests:
-	@echo "Testing"
-	@make tests
+run-tests:
+	@docker-compose -f infra/docker-compose.tests.yml up -d

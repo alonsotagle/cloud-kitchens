@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = f"mongodb://{os.environ.get('MONGODB_USERNAME')}:{os.environ.get('MONGODB_PASSWORD')}@{os.environ.get('MONGODB_HOSTNAME')}:27017/{os.environ.get('MONGODB_DATABASE')}"
 mongo.init_app(app)
 
-@app.before_first_request
+
 def initialize_db():
     mongo.db.orders.drop()
     mongo.db.shelves.drop()
@@ -42,4 +42,5 @@ def discard(order_id):
 
 
 if __name__ == "__main__":
+    initialize_db()
     app.run(host="0.0.0.0")

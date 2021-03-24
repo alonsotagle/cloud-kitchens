@@ -28,9 +28,6 @@ def get_available_shelf(temperature: str) -> str:
 
     shelf = get_shelf_by_temperature(temperature)
 
-    app.logger.info(temperature)
-    app.logger.info(shelf)
-
     if not can_place_order(shelf):
         if temperature == "overflow":
             orders = shelf.get("orders")
@@ -88,7 +85,7 @@ def remove_shelf_order(order_id: str) -> None:
 
 
 def pull_order(shelf_temperature: str, order_id: str) -> None:
-    mongo.db.shelves.update(
+    mongo.db.shelves.update_one(
         { "temperature": shelf_temperature },
         {
             "$pull": { "orders": { "id": order_id } }
@@ -97,10 +94,11 @@ def pull_order(shelf_temperature: str, order_id: str) -> None:
 
 
 def set_order_to_waste(shelf_temperature: str, order_id: str) -> None:
+    app.logger.info(f"Order {order_id} wasted")
     if is_order_in_shelf(order_id):
         log_order_status(order_id, "waste")
         pull_order(shelf_temperature, order_id)
 
 
 def is_order_in_shelf(order_id: str) -> bool:
-    return mongo.db.shelves.find({ "orders.id": order_id }).count() > 0
+    return mongo.db.shelves.count_documents({ "orders.id": order_id }) > 0

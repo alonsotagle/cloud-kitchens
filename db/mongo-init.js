@@ -43,3 +43,14 @@ db.createUser({
     },
   ],
 });
+
+db.createUser({
+  user: "test",
+  pwd: "0X78Y!GQ#pjV%Rxz",
+  roles: [
+    {
+      role: "readWrite",
+      db: "cloudkitchensdb",
+    },
+  ],
+});
