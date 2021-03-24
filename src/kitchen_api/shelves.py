@@ -11,6 +11,8 @@ def assign_shelf(order: dict) -> None:
 
     shelf_temperature = get_available_shelf(temperature)
 
+    app.logger.info(f"Order {order_id} - shelf {shelf_temperature}")
+
     data = {
         "id": order_id,
         "shelfLife": order.get("shelfLife"),

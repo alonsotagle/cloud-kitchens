@@ -1,4 +1,5 @@
 from datetime import datetime
+from flask import current_app as app
 
 from .database import mongo
 
@@ -12,6 +13,7 @@ def insert_order(order: dict) -> str:
 
 
 def log_order_status(order_id: str, status: str) -> None:
+    app.logger.info(f"Order {order_id} - status {status}")
     mongo.db.orders.update_one(
         {"_id": order_id},
         {
