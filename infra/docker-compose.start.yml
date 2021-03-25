@@ -77,6 +77,7 @@ services:
       - MONGODB_USERNAME=kitchen
       - MONGODB_PASSWORD=5^2A5ubDwhk#&Xn&
       - MONGODB_HOSTNAME=db.cloudkitchens.com
+      - MONGODB_PORT=27017
       - HOST_COURIERS=http://couriers.cloudkitchens.com
 
   couriers:
@@ -103,6 +104,7 @@ services:
       - MONGODB_USERNAME=couriers
       - MONGODB_PASSWORD=u#Z6I8FPGHEq479n
       - MONGODB_HOSTNAME=db.cloudkitchens.com
+      - MONGODB_PORT=27017
       - HOST_KITCHEN=http://kitchen.cloudkitchens.com
 
   shelves:

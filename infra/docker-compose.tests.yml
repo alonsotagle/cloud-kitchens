@@ -7,14 +7,8 @@ services:
     command: mongod --auth
     volumes:
       - ../db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    ports:
-      - 27017:27017
     environment:
       - MONGO_INITDB_DATABASE=cloudkitchensdb
-    networks:
-      default:
-        aliases:
-          - db.cloudkitchens.com
 
   tests:
     build:
@@ -23,14 +17,19 @@ services:
       args:
         DIR_SOURCE: tests/
     container_name: tests
-    command: py.test --showlocals --color=yes tests/
+    command: py.test --showlocals --color=yes tests/ -x
     environment:
       - MONGODB_DATABASE=cloudkitchensdb
       - MONGODB_USERNAME=test
       - MONGODB_PASSWORD=0X78Y!GQ#pjV%Rxz
-      - MONGODB_HOSTNAME=db.cloudkitchens.com
+      - MONGODB_HOSTNAME=mongodb_test
+      - MONGODB_PORT=27017
     volumes:
       - ../src:/app/src
       - ../tests:/app/tests
     depends_on:
       - mongodb_test
+
+networks:
+  tests:
+    name: tests

@@ -6,7 +6,7 @@ from .database import mongo
 from .assign_courier import assign_courier
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = f"mongodb://{os.environ.get('MONGODB_USERNAME')}:{os.environ.get('MONGODB_PASSWORD')}@{os.environ.get('MONGODB_HOSTNAME')}:27017/{os.environ.get('MONGODB_DATABASE')}"
+app.config["MONGO_URI"] = f"mongodb://{os.environ.get('MONGODB_USERNAME')}:{os.environ.get('MONGODB_PASSWORD')}@{os.environ.get('MONGODB_HOSTNAME')}:{os.environ.get('MONGODB_PORT')}/{os.environ.get('MONGODB_DATABASE')}"
 mongo.init_app(app)
 
 @app.route("/couriers", methods=["POST"])
