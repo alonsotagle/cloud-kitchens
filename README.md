@@ -42,7 +42,7 @@ make run-tests
 | MongoDB test      | -                     | mongodb_test          | MongoDB                       |
 | Tests             | tests/                | tests                 | Pytest                        |
 
-TODO Diagram
+![Diagram](https://cloudkitchens.s3-us-west-2.amazonaws.com/diagram.png)
 
 ## CHALLENGE TASKS
 
