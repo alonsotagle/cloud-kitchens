@@ -1,2 +1,2 @@
 requests==2.31.0
-pyMongo==3.11.3
+pyMongo==4.18.3
